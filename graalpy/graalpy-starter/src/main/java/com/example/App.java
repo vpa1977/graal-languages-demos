@@ -7,21 +7,24 @@
 package com.example;
 
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.io.IOAccess;
 
 public class App {
 
     public static void main(String[] args) {
         try (Context context = Context.newBuilder("python")
                          /* Enabling some of these is needed for various standard library modules */
-                        .allowNativeAccess(false)
-                        .allowCreateThread(false)
-                        .allowIO(IOAccess.newBuilder()
-                                        .allowHostFileAccess(false)
-                                        .allowHostSocketAccess(false)
-                                        .build())
+                        .allowAllAccess(true)
                         .build()) {
-            context.eval("python", "print('Hello from GraalPy!')");
+            context.eval("python", """
+import java
+from java.util import ArrayList
+l = ArrayList()
+l.add(1)
+print("!!!! " + str(l.get(0)))
+Foo = java.type("com.example.Foo")
+foo = Foo()
+foo.print()
+            """);
         }
     }
 }
