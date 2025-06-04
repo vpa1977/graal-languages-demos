@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Prompt</title>
+    <style>
+        body { font-family: sans-serif; }
+        #responseContainer { margin-top: 20px; border: 1px solid #ccc; min-height: 100px; width: 100%; display: flex; align-items: center; justify-content: center; }
+        label { margin-right: 10px; }
+        input[type="text"] { padding: 8px; width: 300px; }
+    </style>
+</head>
+<body>
+
+<h1>Prompt</h1>
+
+<div>
+    <label for="textInput">Enter Text:</label>
+    <input type="text" id="textInput" name="text" placeholder="Type text here...">
+    <button type="button" id="submit">Submit</button>
+</div>
+
+<div id="responseContainer">
+</div>
+
+<script>
+    const submit = document.getElementById('submit');
+    const textInput = document.getElementById('textInput');
+    const responseContainer = document.getElementById('responseContainer');
+
+    async function fetchText(url) {
+        try {
+            const response = await fetch(url);
+
+            // Check if the request was successful (status code 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Get the response body as plain text
+            const text = await response.text();
+            return text;
+        } catch (error) {
+            console.error('Error fetching text:', error);
+            throw error; // Re-throw the error for the caller to handle
+        }
+    }
+
+    function update() {
+        submit.disabled = true
+        const text = textInput.value.trim(); // Get input value and remove leading/trailing whitespace
+
+        if (text) {
+            responseContainer.textContent = "Working .... "
+            // IMPORTANT: Encode the text for use in a URL path segment
+            const encodedText = encodeURIComponent(text);
+            const url = `/generate/${encodedText}`; // Construct the URL
+            fetchText(url)
+                .then(text => {
+                    responseContainer.innerHTML = text
+                    submit.disabled = false
+                })
+                .catch(error => {
+                    console.error('Failed to fetch text:', error);
+                    submit.disabled = false
+                });
+        } else {
+            responseContainer.textContent = "Please provide prompt"
+            submit.disabled = false
+        }
+
+    }
+    submit.onclick = update
+</script>
+</body>
+</html>
