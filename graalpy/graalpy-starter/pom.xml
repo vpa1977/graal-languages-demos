@@ -13,7 +13,7 @@
   <properties>
     <graalpy.version>24.2.0</graalpy.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.release>24</maven.compiler.release>
   </properties>
 
   <dependencyManagement>
@@ -31,7 +31,7 @@
   <dependencies>
     <dependency>
         <groupId>org.graalvm.polyglot</groupId>
-        <artifactId>polyglot</artifactId> 
+        <artifactId>polyglot</artifactId>
         <version>${graalpy.version}</version>
     </dependency>
     <dependency>
